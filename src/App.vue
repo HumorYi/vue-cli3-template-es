@@ -6,7 +6,7 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2019-12-27 09:16:54
- * @LastEditTime : 2019-12-30 14:30:25
+ * @LastEditTime : 2019-12-31 14:59:25
 -->
 
 <template>
@@ -22,6 +22,8 @@ export default {
 </script>
 
 <style lang="sass">
+@import '@/assets/sass/global.sass'
+
 #app
   font-family: 'Avenir', Helvetica, Arial, sans-serif
   -webkit-font-smoothing: antialiased

@@ -6,14 +6,17 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2019-12-27 10:48:37
- * @LastEditTime : 2019-12-31 09:24:07
+ * @LastEditTime : 2019-12-31 15:01:57
  */
 import axios from 'axios'
 import router from '../router'
 import qs from 'qs'
 
+// import { Message } from 'element-ui'
+
 import { CONFIG_API } from '@/config'
 import { UTIL_USER } from '@/util'
+import { ERROR_API } from '@/error'
 
 // 默认不启用 cookie
 // axios.defaults.withCredentials = true
@@ -75,24 +78,31 @@ export const request = (method, url, param = {}) => {
   }
 
   return axios(config)
-    .then(({ data }) => {
-      if (
-        !data.code ||
-        data.code === CONFIG_API.SUCCESS.code ||
-        // data.code === CONFIG_API.FAIL.code ||
-        data.code === 40001
-      ) {
+    .then(({ data: { code, msg, data } }) => {
+      // 响应成功，把响应数据返回给接口
+      if (code === CONFIG_API.SUCCESS.code) {
         return data
       }
 
-      // 用户状态变更
-      if (data.code === CONFIG_API.ACCESS_TOKEN_INVALID.code) {
+      // 响应失败，弹出响应失败信息
+      if (code === CONFIG_API.FAIL.code) {
+        // return Message.error(msg)
+      }
+
+      // token 失效
+      if (code === CONFIG_API.ACCESS_TOKEN_INVALID.code) {
         UTIL_USER.signOut()
 
         return router.replace({ name: 'login' })
       }
 
-      throw new Error(`服务器响应失败: ${data.msg}`)
+      // 响应异常
+      if (code === CONFIG_API.ACCESS_EXCEPTION.code) {
+        return ERROR_API(msg)
+      }
+
+      // 未知响应错误
+      ERROR_API(`服务器响应未知错误，错误码为：${code}:，错误提示信息为：${msg}`)
     })
     .catch(err => console.error(err))
 }

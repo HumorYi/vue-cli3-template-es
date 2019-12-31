@@ -28,6 +28,11 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+## 开发环境设计思想：支架式设计，配置式驱动
+  - 把一个大体的架构划分成一个个子支架，子支架下管理着自己的子支架，例如：
+    ```
+    配置、错误处理、注册器、过滤器、接口请求响应、工具、通用组件封装等
+    ```
 
 ## 开发约定
 
@@ -140,7 +145,22 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
   - 所有的公共工具函数统一存放在 src/util 目录中，index.js 为该页面的入口
 
-  - axios 请求响应拦截器统一存放在 src/http 目录中，index.js 为该页面的入口
+  - 错误处理 统一存放在 src/error 目录中，便于管理、维护、扩展
+
+  - axios 请求响应拦截器统一存放在 src/http 目录中，index.js 为该页面的入口，
+    拦截器会拦截错误的信息，以弹窗的形式显示错误信息，未知的错误会在接口错误配置文件中统一处理，
+    只有当响应码正确时才返回响应数据给接口，接口只需要处理响应正确的数据即可，例如：
+    ```
+    API_USER.login()
+      .then(data => {})
+      .catch(ERROR_API)
+    ```
+
+  - API 统一存放在 src/api 目录中
+
+    注意：api 文件分类文件夹命名应同 src/views 目录中的 页面目录名一致，存放对应页面的 api
+
+    在 api 文件中封装方便调用的 Promise，包含方法，接口名，外部调用接口函数时只需传递数据即可
 
   - 所有在 main.js 中要引入的文件或其它处理,统一存放在 src/register 目录中，以单一文件的方式分类处理，index.js 为该页面的入口
 
@@ -159,14 +179,6 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
     注意：加上注释，严禁出现无法读取的配置（数字、字符串等描述性信息）
 
-  - API 统一存放在 src/api 目录中
-
-    注意：api 文件分类文件夹命名应同 src/views 目录中的 页面目录名一致，存放对应页面的 api
-
-    在 api 文件中封装方便调用的 Promise，包含方法，接口名，外部调用接口函数时只需传递数据即可
-
-  - 错误处理 统一存放在 src/error 目录中，便于管理、维护、扩展
-
 - z-index 使用约定
 
   - 底部轮播图 -100~0
@@ -184,17 +196,21 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
   - 条件判断比较多时，使用 json 来添加 映射关系，使代码设计更清晰可读
   - 组件设计保持单一性，把使用组件的使用交给外部控制，减少组件内部逻辑
   - 路由 path 使用小写单词，多个单词之间使用 _ 分割
-  - 每个路由配置项都要写 meta 元数据项，内部必须有 title 属性，表示当前页签标题，例如：
+  - 每个路由配置项都要写 meta 元数据项，例如：
     ```
     {
       path: '/xxx',
       name: 'xxx',
       meta: {
-        title: 'xxx'
+        // 页签标题（必填）
+        title: 'xxx',
+        // 是否需要登录授权
+        loginAuth: true
       }
     }
     ```
   - 除了要实时监听数据的变化，不要在模板层（template）写逻辑，保留单一性，模板只做渲染，逻辑放在 js 处理
+  - 全局样式在 App.vue 中引入
 
 ## 目录树
 ```
@@ -229,9 +245,8 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 │  │  ├─images                                            图片
 │  │  └─sass                                              样式
 │  │          common.sass                                 全局引入的公共样式
-│  │          component.sass                              全部组件都要引入的样式
 │  │          element-ui-reset.sass                       element-ui 样式重置
-│  │          index.sass                                  入口样式
+│  │          global.sass                                 全局样式
 │  │          mixin.sass                                  函数样式
 │  │          reset.sass                                  浏览器默认样式重置
 │  │          variables.sass                              变量配置

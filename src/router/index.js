@@ -6,12 +6,12 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2019-12-27 09:16:54
- * @LastEditTime : 2019-12-30 14:35:19
+ * @LastEditTime : 2019-12-31 15:04:28
  */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-// import { UTIL_USER } from '@/util'
+import { UTIL_USER } from '@/util'
 
 import Index from '../views/Index.vue'
 
@@ -22,7 +22,10 @@ const routes = [
     path: '/',
     name: 'index',
     meta: {
-      title: '首页'
+      // 页签标题
+      title: '首页',
+      // 登录授权
+      loginAuth: false
     },
     component: Index
   }
@@ -55,13 +58,13 @@ router.beforeEach((to, from, next) => {
   }
 
   // 未登录跳转到登录页
-  /* if (to.name !== 'login' && !UTIL_USER.isLogin()) {
+  if (to.matched.some(r => r.meta.loginAuth) && !UTIL_USER.isLogin()) {
     return next({
       name: 'login',
       // 用于登录成功后跳转回原页面
       query: { redirect: to.query.redirect || to.name }
     })
-  } */
+  }
 
   return next()
 })
