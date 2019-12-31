@@ -6,10 +6,10 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2019-12-27 10:48:37
- * @LastEditTime : 2019-12-27 11:39:20
+ * @LastEditTime : 2019-12-30 15:29:35
  */
 
-import CONFIG_RESPONSE from './response'
+import CONFIG_API from './api'
 import CONFIG_USER from './user'
 
-export { CONFIG_RESPONSE, CONFIG_USER }
+export { CONFIG_API, CONFIG_USER }

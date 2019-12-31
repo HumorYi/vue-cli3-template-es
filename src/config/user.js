@@ -6,8 +6,14 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2019-12-27 10:48:37
- * @LastEditTime : 2019-12-30 14:27:44
+ * @LastEditTime : 2019-12-27 10:51:49
  */
 
 export default {
+  // 1：普通消费者；2：VIP用户； 3：团长
+  type: {
+    1: 'ordinary',
+    2: 'member',
+    3: 'regimentalCommander'
+  }
 }

@@ -6,13 +6,13 @@
  * @ModifierEmail:
  * @ModifierDescription:
  * @Date: 2019-12-27 10:48:37
- * @LastEditTime : 2019-12-27 10:50:32
+ * @LastEditTime : 2019-12-31 09:24:07
  */
 import axios from 'axios'
 import router from '../router'
 import qs from 'qs'
 
-import { CONFIG_RESPONSE } from '@/config'
+import { CONFIG_API } from '@/config'
 import { UTIL_USER } from '@/util'
 
 // 默认不启用 cookie
@@ -78,15 +78,15 @@ export const request = (method, url, param = {}) => {
     .then(({ data }) => {
       if (
         !data.code ||
-        data.code === CONFIG_RESPONSE.SUCCESS.code ||
-        data.code === CONFIG_RESPONSE.FAIL.code ||
+        data.code === CONFIG_API.SUCCESS.code ||
+        // data.code === CONFIG_API.FAIL.code ||
         data.code === 40001
       ) {
         return data
       }
 
       // 用户状态变更
-      if (data.code === CONFIG_RESPONSE.ACCESS_TOKEN_INVALID.code) {
+      if (data.code === CONFIG_API.ACCESS_TOKEN_INVALID.code) {
         UTIL_USER.signOut()
 
         return router.replace({ name: 'login' })

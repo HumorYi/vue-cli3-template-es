@@ -165,6 +165,8 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
     在 api 文件中封装方便调用的 Promise，包含方法，接口名，外部调用接口函数时只需传递数据即可
 
+  - 错误处理 统一存放在 src/error 目录中，便于管理、维护、扩展
+
 - z-index 使用约定
 
   - 底部轮播图 -100~0
@@ -175,12 +177,6 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
   - 悬浮窗 500~600
   - 悬浮窗按钮 600~700
 
-
-
-
-
-
-
 - 注意事项
   - 在进行条件判断时，使用全等(===)进行判断
   - 严禁出现 !user 这种判断，必须要判断到对应的数据类型，例如：user !== null
@@ -188,8 +184,20 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
   - 条件判断比较多时，使用 json 来添加 映射关系，使代码设计更清晰可读
   - 组件设计保持单一性，把使用组件的使用交给外部控制，减少组件内部逻辑
   - 路由 path 使用小写单词，多个单词之间使用 _ 分割
+  - 每个路由配置项都要写 meta 元数据项，内部必须有 title 属性，表示当前页签标题，例如：
+    ```
+    {
+      path: '/xxx',
+      name: 'xxx',
+      meta: {
+        title: 'xxx'
+      }
+    }
+    ```
+  - 除了要实时监听数据的变化，不要在模板层（template）写逻辑，保留单一性，模板只做渲染，逻辑放在 js 处理
 
 ## 目录树
+```
 │  .browserslistrc                                        浏览器兼容列表等
 │  .env                                                   开发环境变量配置
 │  .env.analyz                                            生产环境变量分析配置
@@ -229,18 +237,24 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 │  │          variables.sass                              变量配置
 │  │
 │  ├─components                                           组件
+│  │
 │  ├─config                                               配置
 │  │      index.js                                        入口文件
-│  │      response.js                                     接口响应文件
+│  │      api.js                                          接口文件
 │  │      user.js                                         用户文件
+│  │
+│  ├─error                                                错误配置
+│  │      index.js                                        入口文件
+│  │      api.js                                          接口文件
 │  │
 │  ├─filter                                               过滤器
 │  │      index.js                                        入口文件
 │  │
-│  ├─http                                                 http请求（axios）
+│  ├─http                                                 http 请求（axios）
 │  │      index.js                                        入口文件
 │  │
-│  ├─mixins                                               混入文件目录
+│  ├─mixins                                               js 混入组件
+│  │
 │  ├─plugins                                              第三方插件
 │  │      element.js                                      element-ui 组件引入文件
 │  │
@@ -266,3 +280,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 └─tests                                                   测试
     └─unit                                                单元测试
             example.spec.js                               测试文件
+```
