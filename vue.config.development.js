@@ -40,19 +40,6 @@ const externals = {
 }
 
 // 注意： 手动引入 cdn 和 自动引入 cdn 两者只能存在一个
-
-// 手动引入 cdn => 注意：指定版本
-// 访问https://unpkg.com获取最新版本
-const cdn = {
-  css: ['http://unpkg.com/element-ui@2.4.5/lib/theme-chalk/index.css'],
-  js: [
-    'http://unpkg.com/vue@2.6.10/dist/vue.min.js',
-    'http://unpkg.com/vue-router@3.1.3/dist/vue-router.min.js',
-    'http://unpkg.com/axios@0.19.0/dist/axios.min.js',
-    'http://unpkg.com/element-ui@2.4.5/lib/index.js'
-  ]
-}
-
 // 自动引入 cdn => 注意：最新版本
 const cdnModules = [
   { name: 'vue', var: 'Vue', path: 'dist/vue.min.js' },
@@ -287,9 +274,6 @@ module.exports = {
       config.plugin('html').tap(args => {
         // 修复 Lazy loading routes Error
         args[0].chunksSortMode = 'none'
-
-        // 手动注入cdn
-        args[0].cdn = cdn
 
         return args
       })

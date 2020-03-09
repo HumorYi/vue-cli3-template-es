@@ -1,0 +1,5 @@
+// 生产环境
+npm i -D babel-plugin-transform-remove-console compression-webpack-plugin @gfx/zopfli brotli-webpack-plugin webpack-bundle-analyzer style-resources-loader
+
+// 开发环境
+npm i -D webpack-cdn-plugin babel-plugin-transform-remove-console compression-webpack-plugin @gfx/zopfli brotli-webpack-plugin webpack-bundle-analyzer style-resources-loader

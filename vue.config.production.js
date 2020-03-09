@@ -29,8 +29,6 @@ const productionGzipReg = new RegExp('\\.(' + productionGzipExtensions.join('|')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 /* CDN S */
-const cdnPlugin = require('webpack-cdn-plugin')
-
 // 忽略要打包的模块
 const externals = {
   vue: 'Vue',
@@ -52,14 +50,6 @@ const cdn = {
     'http://unpkg.com/element-ui@2.4.5/lib/index.js'
   ]
 }
-
-// 自动引入 cdn => 注意：最新版本
-const cdnModules = [
-  { name: 'vue', var: 'Vue', path: 'dist/vue.min.js' },
-  { name: 'vue-router', var: 'VueRouter', path: 'dist/vue-router.min.js' },
-  { name: 'axios', var: 'axios', path: 'dist/axios.min.js' },
-  { name: 'element-ui', var: 'ELEMENT', path: 'lib/index.js', style: 'lib/theme-chalk/index.css' }
-]
 /* CND E */
 
 // in the development, use own LAN ip to running or debug
@@ -390,11 +380,6 @@ module.exports = {
         new BrotliPlugin({
           test: productionGzipReg,
           minRatio: 0.99
-        }),
-        // 动态引入 CND
-        new cdnPlugin({
-          modules: cdnModules,
-          publicPath: '/node_modules'
         })
       )
     } else {
