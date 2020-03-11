@@ -17,13 +17,22 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <link rel="icon" href="<%= BASE_URL %>favicon.ico">
   <title>vue-cli3-template-es</title>
+
+  <!-- 开发环境 引入 element-ui 样式 -->
+  <% if (process.env.NODE_ENV === 'development') { %>
+  <link rel="stylesheet" href="http://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css" />
+  <% } %>
+
+  <!-- 引入 iconfont 样式，TODO: iconfont已更改，会生成新链接，要覆盖旧链接 -->
+  <link rel="stylesheet" href="http://at.alicdn.com/t/font_1592520_aac5lyvxx56.css" />
+
   <!-- 使用CDN的CSS文件 -->
   <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.css) { %>
-    <link href="<%= htmlWebpackPlugin.options.cdn.css[i] %>" />
+  <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.cdn.css[i] %>" />
   <% } %>
   <!-- 使用CDN的JS文件 -->
   <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.js) { %>
-    <script href="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
+  <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
   <% } %>
 </head>
 

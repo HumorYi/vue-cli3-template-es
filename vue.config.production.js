@@ -42,12 +42,12 @@ const externals = {
 // 手动引入 cdn => 注意：指定版本
 // 访问https://unpkg.com获取最新版本
 const cdn = {
-  css: ['http://unpkg.com/element-ui@2.4.5/lib/theme-chalk/index.css'],
+  css: ['http://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css'],
   js: [
     'http://unpkg.com/vue@2.6.10/dist/vue.min.js',
     'http://unpkg.com/vue-router@3.1.3/dist/vue-router.min.js',
     'http://unpkg.com/axios@0.19.0/dist/axios.min.js',
-    'http://unpkg.com/element-ui@2.4.5/lib/index.js'
+    'http://unpkg.com/element-ui@2.13.0/lib/index.js'
   ]
 }
 /* CND E */
