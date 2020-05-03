@@ -1,12 +1,12 @@
 /*
  * @Author: Bamboo
  * @AuthorEmail: bamboo8493@126.com
- * @AuthorDate: 2019-08-08 15:02:52
  * @AuthorDescription: vue-cli配置
  * @Modifier:
  * @ModifierEmail:
- * @ModifierDate: 2019-08-26 17:29:49
  * @ModifierDescription:
+ * @Date: 2019-12-27 15:25:59
+ * @LastEditTime: 2020-05-03 17:34:41
  */
 
 const path = require('path')
@@ -29,37 +29,27 @@ const productionGzipReg = new RegExp('\\.(' + productionGzipExtensions.join('|')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 /* CDN S */
-const cdnPlugin = require('webpack-cdn-plugin')
-
 // 忽略要打包的模块
 const externals = {
   vue: 'Vue',
   'vue-router': 'VueRouter',
   axios: 'axios',
   'element-ui': 'ELEMENT'
+  // 'tinymce/tinymce': 'tinymce'
 }
-
-// 注意： 手动引入 cdn 和 自动引入 cdn 两者只能存在一个
 
 // 手动引入 cdn => 注意：指定版本
 // 访问https://unpkg.com获取最新版本
 const cdn = {
-  css: ['http://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css'],
+  css: ['https://cdn.bootcss.com/element-ui/2.13.0/theme-chalk/index.css'],
   js: [
-    'http://unpkg.com/vue@2.6.10/dist/vue.min.js',
-    'http://unpkg.com/vue-router@3.1.3/dist/vue-router.min.js',
-    'http://unpkg.com/axios@0.19.0/dist/axios.min.js',
-    'http://unpkg.com/element-ui@2.13.0/lib/index.js'
+    'https://cdn.bootcss.com/vue/2.6.11/vue.min.js',
+    'https://cdn.bootcss.com/vue-router/3.1.3/vue-router.min.js',
+    'https://cdn.bootcss.com/axios/0.19.2/axios.min.js',
+    'https://cdn.bootcss.com/element-ui/2.13.0/index.js'
+    // 'https://cdn.bootcss.com/tinymce/5.2.0/tinymce.min.js'
   ]
 }
-
-// 自动引入 cdn => 注意：最新版本
-const cdnModules = [
-  { name: 'vue', var: 'Vue', path: 'dist/vue.min.js' },
-  { name: 'vue-router', var: 'VueRouter', path: 'dist/vue-router.min.js' },
-  { name: 'axios', var: 'axios', path: 'dist/axios.min.js' },
-  { name: 'element-ui', var: 'ELEMENT', path: 'lib/index.js', style: 'lib/theme-chalk/index.css' }
-]
 /* CND E */
 
 // in the development, use own LAN ip to running or debug
@@ -81,7 +71,7 @@ const getLANIp = () => {
   // 找不到使用本地测试 ip
   return '127.0.0.1'
 }
-const addStyleResource = rule => {
+/* const addStyleResource = rule => {
   rule
     .use('style-resource')
     .loader('style-resources-loader')
@@ -91,7 +81,7 @@ const addStyleResource = rule => {
         path.resolve(__dirname, './src/assets/sass/mixin.sass')
       ]
     })
-}
+} */
 
 module.exports = {
   // 默认 '/'，部署应用包时的基本 URL,
@@ -266,11 +256,19 @@ module.exports = {
   // 对内部的 webpack 配置进行更细粒度的修改
   chainWebpack: config => {
     // 添加 公共样式文件 到每个组件
-    const types = ['vue-modules', 'vue', 'normal-modules', 'normal']
-    types.forEach(type => addStyleResource(config.module.rule('sass').oneOf(type)))
+    // const types = ['vue-modules', 'vue', 'normal-modules', 'normal']
+    // types.forEach(type => addStyleResource(config.module.rule('sass').oneOf(type)))
 
-    // 修复HMR
-    config.resolve.symlinks(true)
+    // 传递给 html-webpack-plugin's 构造函数的新参数
+    config.plugin('html').tap(args => {
+      // 修复 Lazy loading routes Error
+      args[0].chunksSortMode = 'none'
+
+      // 手动注入cdn
+      args[0].cdn = isProduction ? cdn : { css: cdn.css }
+
+      return args
+    })
 
     // 生产环境配置
     if (isProduction) {
@@ -282,17 +280,6 @@ module.exports = {
 
       // 忽略打包
       config.externals(externals)
-
-      // 传递给 html-webpack-plugin's 构造函数的新参数
-      config.plugin('html').tap(args => {
-        // 修复 Lazy loading routes Error
-        args[0].chunksSortMode = 'none'
-
-        // 手动注入cdn
-        args[0].cdn = cdn
-
-        return args
-      })
 
       // 分割代码
       config.optimization.splitChunks({
@@ -358,11 +345,7 @@ module.exports = {
 
       // 打包分析
       if (process.env.IS_ANALYZ) {
-        config.plugin('webpack-report').use(BundleAnalyzerPlugin, [
-          {
-            analyzerMode: 'static'
-          }
-        ])
+        config.plugin('webpack-report').use(BundleAnalyzerPlugin, [{ analyzerMode: 'static' }])
       }
     }
   },
@@ -390,11 +373,6 @@ module.exports = {
         new BrotliPlugin({
           test: productionGzipReg,
           minRatio: 0.99
-        }),
-        // 动态引入 CND
-        new cdnPlugin({
-          modules: cdnModules,
-          publicPath: '/node_modules'
         })
       )
     } else {
